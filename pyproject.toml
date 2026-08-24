@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "quinaryram"
+version = "0.1.0"
+description = "Reference kernels for five-state mutable integer memory"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Apache-2.0"}
+authors = [{name = "RequiredTruth"}]
+[project.scripts]
+quinaryram = "quinaryram.cli:main"
+[tool.setuptools.packages.find]
+include = ["quinaryram*"]
