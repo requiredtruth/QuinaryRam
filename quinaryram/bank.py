@@ -26,6 +26,14 @@ class Bank:
     _data: list[list[int]] = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
+        for name, value in (
+            ("slots", self.slots),
+            ("width", self.width),
+            ("lower", self.lower),
+            ("upper", self.upper),
+        ):
+            if isinstance(value, bool) or not isinstance(value, int):
+                raise ValueError(f"{name} must be an integer")
         if self.slots < 1 or self.width < 1:
             raise ValueError("slots and width must be positive")
         if self.lower >= self.upper:
@@ -93,6 +101,17 @@ class Bank:
 
     @classmethod
     def from_snapshot(cls, payload: dict[str, object]) -> "Bank":
+        if not isinstance(payload, dict):
+            raise ValueError("snapshot must be a JSON object")
         if payload.get("format") != "quinaryram-v1":
             raise ValueError("unsupported snapshot format")
-        return cls(int(payload["slots"]), int(payload["width"]), int(payload["lower"]), int(payload["upper"]), payload["data"])  # type: ignore[arg-type]
+        names = ("slots", "width", "lower", "upper")
+        try:
+            values = tuple(payload[name] for name in names)
+            data = payload["data"]
+        except KeyError as exc:
+            raise ValueError(f"snapshot is missing {exc.args[0]}") from exc
+        for name, value in zip(names, values, strict=True):
+            if isinstance(value, bool) or not isinstance(value, int):
+                raise ValueError(f"snapshot {name} must be an integer")
+        return cls(*values, initial=data)  # type: ignore[arg-type]
