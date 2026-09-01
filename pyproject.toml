@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 [project]
 name = "quinaryram"
-version = "0.1.0"
+version = "0.1.1"
 description = "Reference kernels for five-state mutable integer memory"
 readme = "README.md"
 requires-python = ">=3.11"
